@@ -26,9 +26,6 @@
       "class-methods-use-this": "off",
       "no-empty": ["error", { "allowEmptyCatch": true }],
       "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
-      "react/jsx-no-bind": [0, {
-        "allowFunctions": true
-      }]
+      "react-hooks/exhaustive-deps": "warn"
     }
 }

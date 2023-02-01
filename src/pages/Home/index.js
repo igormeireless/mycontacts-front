@@ -84,12 +84,12 @@ export default function Home() {
     setContactBeingDelete(contact);
   }
 
-  function handleCloseDeleteModal() {
+  const handleCloseDeleteModal = () => {
     setisDeleteModalVisible(false);
     setContactBeingDelete(null);
-  }
+  };
 
-  async function handleConfirmDeleteContact() {
+  const handleConfirmDeleteContact = async () => {
     try {
       setIsLoadingDelete(true);
 
@@ -113,7 +113,7 @@ export default function Home() {
     } finally {
       setIsLoadingDelete(false);
     }
-  }
+  };
 
   return (
     <Container>
@@ -214,8 +214,8 @@ export default function Home() {
               <div className="info">
                 <div className="contact-name">
                   <strong>{contact.name}</strong>
-                  {contact.category_name && (
-                  <small>{contact.category_name}</small>
+                  {contact.category.name && (
+                  <small>{contact.category.name}</small>
                   )}
                 </div>
 
