@@ -1,8 +1,5 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-nested-ternary */
-import {
-  useEffect, useMemo, useState, useCallback,
-} from 'react';
 import { Link } from 'react-router-dom';
 
 import {
@@ -28,92 +25,27 @@ import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 
 import formatPhone from '../../utils/formatPhone';
-import ContactsService from '../../services/ContactsService';
 
-import toast from '../../utils/toast';
+import useHome from './useHome';
 
 export default function Home() {
-  const [contacts, setContacts] = useState([]);
-  const [orderBy, setOrderBy] = useState('asc');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const [isDeleteModalVisible, setisDeleteModalVisible] = useState(false);
-  const [contactBeingDelete, setContactBeingDelete] = useState(null);
-  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
-
-  const filteredContacts = useMemo(() => contacts.filter((contact) => (
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )), [contacts, searchTerm]);
-
-  const loadContacts = useCallback(async () => {
-    try {
-      setIsLoading(true);
-
-      const contactsList = await ContactsService.listContacts(orderBy);
-
-      setHasError(false);
-      setContacts(contactsList);
-    } catch (error) {
-      setHasError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [orderBy]);
-
-  useEffect(() => {
-    loadContacts();
-  }, [loadContacts]);
-
-  function handleToggleOrderBy() {
-    setOrderBy(
-      (prevState) => (prevState === 'asc' ? 'desc' : 'asc'),
-    );
-  }
-
-  function handleChangeSearchTerm(event) {
-    setSearchTerm(event.target.value);
-  }
-
-  function handleTryAgain() {
-    loadContacts();
-  }
-
-  function handleDeleteContact(contact) {
-    setisDeleteModalVisible(true);
-    setContactBeingDelete(contact);
-  }
-
-  const handleCloseDeleteModal = () => {
-    setisDeleteModalVisible(false);
-    setContactBeingDelete(null);
-  };
-
-  const handleConfirmDeleteContact = async () => {
-    try {
-      setIsLoadingDelete(true);
-
-      await ContactsService.deleteContact(contactBeingDelete.id);
-
-      setContacts((prevState) => prevState.filter(
-        (contact) => contact.id !== contactBeingDelete.id,
-      ));
-
-      handleCloseDeleteModal();
-
-      toast({
-        type: 'success',
-        text: 'Contato deletado com sucesso!',
-      });
-    } catch {
-      toast({
-        type: 'danger',
-        text: 'Ocorreu um erro ao deletar o contato!',
-      });
-    } finally {
-      setIsLoadingDelete(false);
-    }
-  };
+  const {
+    isLoading,
+    contactBeingDelete,
+    isDeleteModalVisible,
+    isLoadingDelete,
+    handleCloseDeleteModal,
+    handleConfirmDeleteContact,
+    contacts,
+    searchTerm,
+    handleChangeSearchTerm,
+    hasError,
+    handleTryAgain,
+    filteredContacts,
+    orderBy,
+    handleToggleOrderBy,
+    handleDeleteContact,
+  } = useHome();
 
   return (
     <Container>
@@ -184,7 +116,11 @@ export default function Home() {
 
               <p>
                 Você ainda não tem nenhum contato cadastrado!
-                Clique no botão <strong>”Novo contato”</strong> à cima
+                Clique no botão
+                {' '}
+                <strong>”Novo contato”</strong>
+                {' '}
+                à cima
                 para cadastrar o seu primeiro!
               </p>
             </EmptyListContainer>
@@ -195,7 +131,14 @@ export default function Home() {
               <img src={magnifierQuestion} alt="Magnifier question" />
 
               <span>
-                Nenhum resultado foi encontrado para <strong>”{searchTerm}”</strong>.
+                Nenhum resultado foi encontrado para
+                {' '}
+                <strong>
+                  ”
+                  {searchTerm}
+                  ”
+                </strong>
+                .
               </span>
             </SearchNotFoundContainer>
           )}
