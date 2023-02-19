@@ -60,7 +60,6 @@ export default function useHome() {
 
   const handleCloseDeleteModal = useCallback(() => {
     setisDeleteModalVisible(false);
-    setContactBeingDelete(null);
   }, []);
 
   const handleConfirmDeleteContact = useCallback(async () => {
